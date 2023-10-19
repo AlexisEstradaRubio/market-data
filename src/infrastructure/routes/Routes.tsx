@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import MarketList from "../ui/views/MarketList";
 
 const PageNotFound: React.FC = () => {
   return (
@@ -16,11 +17,7 @@ const AppRoutes: React.FC = () => {
       <Route
         index
         path="/"
-        element={
-          <div>
-            <h2>firts page</h2>
-          </div>
-        }
+        element={ <MarketList />}
       />
       <Route
         path="products"

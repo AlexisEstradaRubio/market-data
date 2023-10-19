@@ -1,8 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import loginReducer from "./loginSlice";
+import marketReducer from "./marketSlice";
+import ticketReducer from "./ticketSlice";
 
 const rootReducer = combineReducers({
-  login: loginReducer,
+  market: marketReducer,
+  ticket: ticketReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

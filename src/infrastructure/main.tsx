@@ -7,7 +7,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 const Main: React.FC = () => {
 
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
