@@ -4,6 +4,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+We are using the marketstack endpoint, which requests are with http, which could block access to some browsers, I recommend using the FireFox browser.
+
 ## Available Scripts
 
 In the project directory, you can run:

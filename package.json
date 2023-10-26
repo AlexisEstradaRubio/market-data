@@ -28,15 +28,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "parser": "babel-eslint",
     "extends": [
-      "standard",
-      "standar-jsx",
-      "standar-react"
+      "react-app",
+      "react-app/jest"
     ],
     "rules": {
       "react/prop-types": 0
