@@ -1,12 +1,14 @@
 import { MarketResponse } from "../../models/market";
 import apiClient from "../../../infrastructure/api/apiClient";
 
-const params = {
-  'access_key': 'c096b0f6ba50b00e4a1eac64f91284b2',
-  'offset': '0'
-}
+
 export const marketRepository = {
-  getMarket: async (): Promise<MarketResponse> => {
+  getMarket: async (pagination: number, rowsPerPage: number): Promise<MarketResponse> => {
+    const params = {
+      'access_key': '735d8fd65f3fb7ba0495355a5066449c',
+      'offset': pagination,
+      'limit': rowsPerPage
+    }
     const response = await apiClient.get<MarketResponse>("tickers", {params});
     return response.data;
   },

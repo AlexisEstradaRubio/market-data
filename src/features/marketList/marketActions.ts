@@ -6,10 +6,10 @@ import {
   fetchError,
 } from "../../application/reducers/marketSlice";
 
-export const marketAction = (): AppThunk => async (dispatch) => {
+export const marketAction = (pagination: number, rowsPerPage: number): AppThunk => async (dispatch) => {
   try {
     dispatch(fetchStart());
-    const response = await marketService.getMarket();
+    const response = await marketService.getMarket(pagination, rowsPerPage);
     dispatch(fetchSuccess({markets: [response]}));
   } catch (err) {
     dispatch(fetchError(err.response.data.error.message));

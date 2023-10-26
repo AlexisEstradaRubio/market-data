@@ -1,30 +1,52 @@
-import {
-  ProductsResponse,
-} from "../../domain/models/tiket";
+import { TicketDetail, TicketPrice } from "../../domain/models/ticket";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ProductState {
-  data: ProductsResponse;
+interface TicketState {
+  dataDetail: TicketDetail;
+  dataPrice: TicketPrice;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: ProductState = {
-  data: [],
+const initialState: TicketState = {
+  dataDetail: {
+    name: "",
+    symbol: "",
+    has_intraday: "",
+    has_eod: "",
+    country: "",
+    stock_exchange: { name: "", acronym: "", country: ""}
+
+  },
+  dataPrice: {
+    pagination: [],
+    data: [{
+      open: '',
+      close: '',
+      high: '',
+      low: '',
+      volume: '',
+      date: '',
+    }]
+  },
   loading: false,
   error: null,
 };
 
 const productSlice = createSlice({
-  name: "products",
+  name: "ticket",
   initialState,
   reducers: {
     fetchStart: (state) => {
       state.loading = true;
     },
-    fetchSuccess: (state, action) => {
+    fetchSuccessDetail: (state, action) => {
       state.loading = false;
-      state.data = action.payload;
+      state.dataDetail = action.payload;
+    },
+    fetchSuccessPrice: (state, action) => {
+      state.loading = false;
+      state.dataPrice = action.payload;
     },
     fetchError: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -33,7 +55,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { fetchStart, fetchSuccess, fetchError } =
+export const { fetchStart, fetchSuccessDetail, fetchSuccessPrice, fetchError } =
   productSlice.actions;
 
 export default productSlice.reducer;

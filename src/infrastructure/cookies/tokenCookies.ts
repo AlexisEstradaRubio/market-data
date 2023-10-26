@@ -6,7 +6,7 @@ const TOKEN_CREATION_TIME_KEY = "tokenCreationTime";
 const TOKEN_VALIDATE_TIME = 25 * 60 * 1000;
 const TOKEN_EXPIRATION_TIME = 30 * 60;
 const TOKEN_EXPIRATION_TIME_DAYS = TOKEN_EXPIRATION_TIME / (60 * 60 * 24);
-export const saveTokensToCookies = (token: string, refreshToken: string) => {
+export const saveTokensToCookies = (token: string, refreshToken?: string) => {
   const options = { expires: TOKEN_EXPIRATION_TIME_DAYS };
   const currentTime = new Date().getTime();
 

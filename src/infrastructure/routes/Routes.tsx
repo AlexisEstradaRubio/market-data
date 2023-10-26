@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MarketList from "../ui/views/MarketList";
+import DetailTicket from "../ui/views/DetailTicket";
 
 const PageNotFound: React.FC = () => {
   return (
@@ -20,12 +21,8 @@ const AppRoutes: React.FC = () => {
         element={ <MarketList />}
       />
       <Route
-        path="products"
-        element={
-            <div>
-              <h2>second page</h2>
-            </div>
-        }
+        path="ticket"
+        element={<DetailTicket /> }
       />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
