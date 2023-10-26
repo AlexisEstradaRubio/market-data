@@ -8,8 +8,16 @@ const useDetailTicketActions = () => {
   const getTicketDetail = (ticket: string) => {
     dispatch(ticketDetailActions(ticket));
   };
-  const getTicketPrice = (ticket: string) => {
-    dispatch(ticketPriceActions(ticket));
+  const getTicketPrice = (
+    ticket: string,
+    startDate: string,
+    endDate: string,
+    pagination: number,
+    rowsPerPage: number
+  ) => {
+    dispatch(
+      ticketPriceActions(ticket, startDate, endDate, pagination, rowsPerPage)
+    );
   };
 
   return {

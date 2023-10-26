@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../application/reducers";
 import useDetailTicketActions from "../../../features/detailTicket/useDetailTicketActions";
@@ -31,7 +31,13 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  TablePagination,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 const DetailTicket: React.FC = () => {
   const { token } = getTokensFromCookies();
@@ -44,9 +50,13 @@ const DetailTicket: React.FC = () => {
   });
   const navigate = useNavigate();
 
-  const [ticketTable] = React.useState([]);
-  const [chartFilter, setChartFilter] = React.useState("close");
-  const [dataChart, setDataChart] = React.useState({
+  const [ticketTable] = useState([]);
+  const [chartFilter, setChartFilter] = useState("close");
+  const [pickerDate, setPickerDate] = useState({
+    start: dayjs("2023-09-01"),
+    end: dayjs("2023-09-30"),
+  });
+  const [dataChart, setDataChart] = useState({
     options: {
       chart: {
         id: "priceTicket",
@@ -57,7 +67,7 @@ const DetailTicket: React.FC = () => {
     },
     series: [
       {
-        name: "series-1",
+        name: "close",
         data: [30, 40, 45, 50, 49, 60, 70, 91],
       },
     ],
@@ -66,6 +76,8 @@ const DetailTicket: React.FC = () => {
   const { dataDetail, dataPrice, loading, error } = useSelector(
     (state: RootState) => state.ticket
   );
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [page, setPage] = useState(0);
 
   const dataEstructureResponse = () => {
     ticketPrice.forEach((ticket) => {
@@ -88,24 +100,24 @@ const DetailTicket: React.FC = () => {
     });
   };
 
-  const dateChartFormat = ticketPrice.map((ticket) => new Date(ticket.date).getDate()).sort();
+  const dateChartFormat = ticketPrice.map((ticket) =>
+    dayjs(ticket.date).date()
+  );
 
   const closeChartData = ticketPrice.map((ticket) => ticket.close);
   const openChartData = ticketPrice.map((ticket) => ticket.open);
   const highChartData = ticketPrice.map((ticket) => ticket.high);
   const lowChartData = ticketPrice.map((ticket) => ticket.low);
   const volumeChartData = ticketPrice.map((ticket) => ticket.volume);
-  
 
-  const dataFacke = { 
+  const dataFilters = {
     close: closeChartData,
-    open: openChartData, 
-    high: highChartData, 
-    low: lowChartData, 
-    volume: volumeChartData, 
-  }
-  const filterdataChartFormat = dataFacke[chartFilter];
-
+    open: openChartData,
+    high: highChartData,
+    low: lowChartData,
+    volume: volumeChartData,
+  };
+  const filterdataChartFormat = dataFilters[chartFilter];
 
   const filterChartPrice = () => {
     const filterPrice = filterdataChartFormat;
@@ -130,16 +142,31 @@ const DetailTicket: React.FC = () => {
   };
 
   const idTable = Math.random() + 1;
+  const handleChangePage = (event, newPage: number) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   useEffect(() => {
     if (token) {
       getTicketDetail(token);
-      getTicketPrice(token);
+      getTicketPrice(
+        token,
+        pickerDate.start.format("YYYY-MM-DD"),
+        pickerDate.end.format("YYYY-MM-DD"),
+        page,
+        rowsPerPage
+      );
     }
     setTickePrice(dataPrice.data);
     setTickeDetail(dataDetail);
-  }, [token]);
+  }, [token, pickerDate, page, rowsPerPage]);
 
   useEffect(() => {
     dataEstructureResponse();
@@ -147,20 +174,18 @@ const DetailTicket: React.FC = () => {
 
   useEffect(() => {
     if (dateChartFormat) {
-      filterChartPrice()
+      filterChartPrice();
     }
-  }, [chartFilter,ticketPrice]);
+  }, [chartFilter, ticketPrice]);
 
   const handleChangeChart = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChartFilter((event.target as HTMLInputElement).value);
   };
 
-
   const returnMenu = () => {
     removeTokensFromCookies();
     return navigate("/");
   };
-
   return (
     <>
       <AppBar position="relative" color={"secondary"}>
@@ -218,6 +243,24 @@ const DetailTicket: React.FC = () => {
                 />
               </RadioGroup>
             </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker", "DatePicker"]}>
+                <DatePicker
+                  label="Start date"
+                  value={pickerDate.start}
+                  onChange={(newValue) =>
+                    setPickerDate({ ...pickerDate, start: newValue })
+                  }
+                />
+                <DatePicker
+                  label="End date"
+                  value={pickerDate.end}
+                  onChange={(newValue) =>
+                    setPickerDate({ ...pickerDate, end: newValue })
+                  }
+                />
+              </DemoContainer>
+            </LocalizationProvider>
           </div>
 
           <TableContainer component={Paper}>
@@ -275,6 +318,15 @@ const DetailTicket: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[25, 50, 100]}
+            component="div"
+            count={20}
+            rowsPerPage={rowsPerPage}
+            page={0}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Container>
       </Box>
       {loading && (
